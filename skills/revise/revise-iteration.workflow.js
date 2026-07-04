@@ -11,11 +11,11 @@ export const meta = {
 // args shape (all strings unless noted):
 // {
 //   dimensions: [{ name, text }],   // active (non-graduated, non-N/A) dimensions with full prompt text
-//   model,                          // the command's model pin ('sonnet' | 'opus'); omit to inherit
+//   model,                          // the artifact file's model pin ('sonnet' | 'opus'); omit to inherit
 //   artifact: { description, deliveryInstructions },
 //   ackList: [string],              // acknowledgements & caveats, verbatim lines
 //   context,                        // project context paragraph (incl. CLAUDE.md excerpts, PATTERNS index)
-//   additionalRules,                // the command's additional prompt rules, preformatted
+//   additionalRules,                // the artifact file's additional prompt rules, preformatted
 // }
 
 const FINDINGS_SCHEMA = {

@@ -64,9 +64,9 @@ Once all reviewers have returned, collect the non-LGTM findings and launch one f
 
 - **CONFIRMED**: the issue is real; cite the artifact evidence.
 - **REFUTED**: the finding is wrong; cite the artifact evidence.
-- **JUDGMENT-CALL**: not factually decidable (a taste, balance, or priority question).
+- **JUDGMENT_CALL**: not factually decidable (a taste, balance, or priority question).
 
-REFUTED findings are dropped and added to the acknowledgements list with a one-line reason so later iterations don't re-litigate them; a dropped-as-REFUTED finding counts as "skipped" for graduation purposes. CONFIRMED and JUDGMENT-CALL findings proceed to step 3. Uncoordinated reviewer convergence on a finding raises its verification priority, not its truth: converged findings still get a skeptic, and a verified-false convergent finding is dropped like any other.
+REFUTED findings are dropped and added to the acknowledgements list with a one-line reason so later iterations don't re-litigate them; a dropped-as-REFUTED finding counts as "skipped" for graduation purposes. CONFIRMED and JUDGMENT_CALL findings proceed to step 3. Uncoordinated reviewer convergence on a finding raises its verification priority, not its truth: converged findings still get a skeptic, and a verified-false convergent finding is dropped like any other.
 
 ### Step 3: evaluate
 
