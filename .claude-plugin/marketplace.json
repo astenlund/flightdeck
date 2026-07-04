@@ -1,0 +1,13 @@
+{
+  "name": "flightdeck",
+  "owner": {
+    "name": "Andreas Stenlund"
+  },
+  "plugins": [
+    {
+      "name": "flightdeck",
+      "source": "./",
+      "description": "A feature-lifecycle workflow for Claude Code: four-index project backlogs, dependency-resolved work selection, and multi-agent review loops for specs, plans, and code, orchestrated end to end by takeoff/land commands."
+    }
+  ]
+}

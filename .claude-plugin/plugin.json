@@ -1,0 +1,13 @@
+{
+  "name": "flightdeck",
+  "displayName": "Flightdeck",
+  "description": "A feature-lifecycle workflow for Claude Code: four-index project backlogs, dependency-resolved work selection, and multi-agent review loops for specs, plans, and code, orchestrated end to end by takeoff/land commands.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Andreas Stenlund"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/astenlund/flightdeck",
+  "repository": "https://github.com/astenlund/flightdeck",
+  "keywords": ["workflow", "review", "backlog", "planning", "multi-agent"]
+}
