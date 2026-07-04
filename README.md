@@ -8,7 +8,7 @@ The core idea: every durable artifact gets fresh-eyes review before it ships. Re
 
 ```
 /plugin marketplace add astenlund/flightdeck
-/plugin install flightdeck@flightdeck
+/plugin install flightdeck@astenlund
 ```
 
 All commands and skills are namespaced: `/flightdeck:takeoff`, `/flightdeck:ready`, and so on.
@@ -48,7 +48,7 @@ Without the optional plugins, the corresponding steps degrade gracefully; substi
 ```
 git clone https://github.com/astenlund/flightdeck
 /plugin marketplace add ./flightdeck
-/plugin install flightdeck@flightdeck
+/plugin install flightdeck@astenlund
 ```
 
 Edits to a locally added marketplace apply on plugin reload; no reinstall loop. Run the parser tests with `node skills/ready/ready.test.js`. The plugin is self-hosting: its own revise loops are used to review changes to it, and `revise-lore` routes workflow learnings back into these files.
