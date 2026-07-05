@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// Deterministic parser behind the flightdeck:ready skill. Reads the active
+// Deterministic parser behind the nightshift:ready skill. Reads the active
 // .claude/ indexes (QUICK_WINS.md, FEATURES.md, BUGS.md), resolves each
 // entry's **Requires:** line, expands sliced features into per-slice work
 // units, and emits a JSON report on stdout:
@@ -676,7 +676,7 @@ function runCli(argRoot) {
   const claudeDir = path.basename(root) === '.claude' ? root : path.join(root, '.claude');
   if (!fs.existsSync(claudeDir)) {
     process.stdout.write(JSON.stringify({
-      error: `no .claude directory found at ${claudeDir}; run /flightdeck:init-workflow to scaffold the four-index layout`,
+      error: `no .claude directory found at ${claudeDir}; run /nightshift:init-workflow to scaffold the four-index layout`,
     }, null, 2) + '\n');
     process.exitCode = 1;
     return;

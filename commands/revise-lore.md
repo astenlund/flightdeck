@@ -22,11 +22,11 @@ The skill's "Step 1: Reflect" list is technical-skill focused (bash commands, co
 
 - **Rationalization around existing rules.** For each point in the session where the user pushed back, corrected, or redirected my approach, ask: was I drifting from a rule that already exists in CLAUDE.md, a memory file, or a command file? If yes, the abstract rule didn't fire when I needed it. Surface a memory entry that pins the failure mode in closer-to-the-moment language than the abstract rule alone, with a back-reference. Reinforcement, not duplication.
 
-## Additional scope: the flightdeck plugin itself
+## Additional scope: the nightshift plugin itself
 
-After updating CLAUDE.md files, also review whether any session learnings apply to the flightdeck commands and skills used in this session. Include this command (`revise-lore`) itself — the meta-loop currently running. Was the CLAUDE.md routing decision (project vs global vs local) clear? Did the command sweep catch the right files? Did the structure-drift signals fire correctly? The instructions in this file are no more sacred than the instructions they govern; if anything in this run felt awkward, fix it at the source.
+After updating CLAUDE.md files, also review whether any session learnings apply to the nightshift commands and skills used in this session. Include this command (`revise-lore`) itself — the meta-loop currently running. Was the CLAUDE.md routing decision (project vs global vs local) clear? Did the command sweep catch the right files? Did the structure-drift signals fire correctly? The instructions in this file are no more sacred than the instructions they govern; if anything in this run felt awkward, fix it at the source.
 
-Plugin edits go to the flightdeck repo clone (find it via `git -C` on the plugin source path, or ask the user where the clone lives), never to the installed plugin cache. For each command or skill, check:
+Plugin edits go to the nightshift repo clone (find it via `git -C` on the plugin source path, or ask the user where the clone lives), never to the installed plugin cache. For each command or skill, check:
 - Were any instructions ambiguous or misinterpreted during this session?
 - Did the user correct a behavior that the command should have prevented?
 - Is there a workflow pattern that worked well but isn't captured?

@@ -2,7 +2,7 @@
 description: Use when a project needs the four-index .claude/ backlog structure scaffolded, or re-run idempotently on an already-scaffolded project to add whatever is missing.
 ---
 
-# /flightdeck:init-workflow
+# /nightshift:init-workflow
 
 Scaffold the four-index backlog structure under `.claude/` for the current project, plus the on-demand `plans/` subdirectory, the on-demand `QUICK_WINS_HISTORY.md` / `FEATURES_HISTORY.md` / `BUGS_HISTORY.md` archives, a SessionStart hook that makes Claude read the indexes on every session start, and a `CLAUDE.md` section that documents the layout. The command is idempotent: re-running on an existing project adds only what's missing and proposes merges for paired wiring whose template-controlled portions have drifted from the current template. Paths are relative to the current working directory (typically the repo root). Brainstorming output lives in feature files (or in patterns when cross-cutting / in bugs when diagnostic). Pre-feature exploratory work lands as a draft feature with `status: exploring` frontmatter and an entry in `FEATURES.md`'s `## Exploring` section.
 
@@ -28,7 +28,7 @@ The on-demand locations have different lifecycles:
 
 - **Plans are ephemeral.** A plan exists while the implementation is in flight and is deleted once the work lands. Plans are purely mechanical step-by-step instructions for the agent doing the work; the code, tests, and commits are the durable record of what was built. There is no "implemented plans" archive.
 - **Feature breakout files are durable.** A feature file under `.claude/features/<slug>.md` captures the design reasoning that led to what's implemented and evolves with the feature over its lifetime. Brainstorming output lands directly in feature files (or in patterns when cross-cutting / bugs when diagnostic) rather than as separate dated specs. The `## Exploring` section in `FEATURES.md` plus a `status: exploring` frontmatter on the breakout file handles pre-dependency-analysis brainstorms; these graduate into themed `##` sections with `**Requires:**` lines once the design firms up.
-- **History archives are archaeological.** `QUICK_WINS_HISTORY.md`, `FEATURES_HISTORY.md`, and `BUGS_HISTORY.md` are appended to as soon as a quick win, feature (or slice), or bug-fix lands; the files themselves are consulted only when something pulls them in (an archaeological lookup, a pattern-doc cross-reference, a negative-knowledge sweep). Splitting shipped entries out keeps the active backlogs scannable on session start. Negative-knowledge entries in `QUICK_WINS_HISTORY.md` (approaches attempted and reverted, with reasons) are first-class promotion candidates into the relevant `.claude/patterns/<slug>.md` Cautionary tales sections. **`/flightdeck:ready` never reads these archives**: when an item ships or is fixed, every active `**Requires:**` line referencing it is edited at the same time to drop the now-satisfied reference, so the active `Requires:` lines describe what is *currently* blocking.
+- **History archives are archaeological.** `QUICK_WINS_HISTORY.md`, `FEATURES_HISTORY.md`, and `BUGS_HISTORY.md` are appended to as soon as a quick win, feature (or slice), or bug-fix lands; the files themselves are consulted only when something pulls them in (an archaeological lookup, a pattern-doc cross-reference, a negative-knowledge sweep). Splitting shipped entries out keeps the active backlogs scannable on session start. Negative-knowledge entries in `QUICK_WINS_HISTORY.md` (approaches attempted and reverted, with reasons) are first-class promotion candidates into the relevant `.claude/patterns/<slug>.md` Cautionary tales sections. **`/nightshift:ready` never reads these archives**: when an item ships or is fixed, every active `**Requires:**` line referencing it is edited at the same time to drop the now-satisfied reference, so the active `Requires:` lines describe what is *currently* blocking.
 
 **Paired wiring** (two plus a conditional):
 
@@ -45,8 +45,8 @@ The on-demand locations have different lifecycles:
 
      The per-file concept checklists in `## Concept checklists` below specify exactly which sections each checklist item covers and are authoritative — judge each checklist item as present-in-equivalent-prose vs absent on the live template-controlled portion, and only flag stale if at least one is absent. Identical-or-enriched template-controlled content (the live file covers everything on the checklist, possibly with additional project-specific prose) is NOT stale — leave it alone. Drift in wording, paragraph order, or added emphasis is not staleness; missing checklist coverage is. User-controlled sections are never inspected for staleness.
    - **`QUICK_WINS_HISTORY.md`**, **`FEATURES_HISTORY.md`**, and **`BUGS_HISTORY.md`** follow the same staleness rule as index files (template-controlled portion = H1 + `## Cross-reference resolution` section; `## Entries` is the user-controlled section). If any history file is missing on a project that still has a populated `## Implemented` / `## Fixed` section inside its parent index, surface the migration opportunity in the plan output but do not auto-move entries; the user decides when to perform the split.
-   - The **SessionStart hook** is stale if its `additionalContext` is missing any of: all four indexes, the plans/ location, the `/flightdeck:ready` command, the `**Requires:**`-line parsing target it operates on. Coverage check, not literal-string match.
-   - The **CLAUDE.md `Backlogs and indexes` section** is stale if it is missing any of: all four subdirectories (features, bugs, patterns, plans), all three history archives (`QUICK_WINS_HISTORY.md`, `FEATURES_HISTORY.md`, `BUGS_HISTORY.md`), the walk-and-remove convention for satisfied `Requires:` references, the `## Exploring` convention in FEATURES.md, the `/flightdeck:ready` command. Coverage check, not literal-string match — project-specific phrasing or added detail is fine.
+   - The **SessionStart hook** is stale if its `additionalContext` is missing any of: all four indexes, the plans/ location, the `/nightshift:ready` command, the `**Requires:**`-line parsing target it operates on. Coverage check, not literal-string match.
+   - The **CLAUDE.md `Backlogs and indexes` section** is stale if it is missing any of: all four subdirectories (features, bugs, patterns, plans), all three history archives (`QUICK_WINS_HISTORY.md`, `FEATURES_HISTORY.md`, `BUGS_HISTORY.md`), the walk-and-remove convention for satisfied `Requires:` references, the `## Exploring` convention in FEATURES.md, the `/nightshift:ready` command. Coverage check, not literal-string match — project-specific phrasing or added detail is fine.
 
 2. **Plan.** Present a concise table to the user: target, state, action. Actions are `create` (missing), `skip` (present and up to date, never clobber), `merge` (template-controlled portion is stale; propose replacing only that portion), or `ask` (existing content is project-specific custom enough that we don't want to silently overwrite).
 
@@ -62,7 +62,7 @@ For each templated file, these are the load-bearing concepts its template-contro
 
 **Scope of each check.** Each checklist item below names the section(s) it inspects in parentheses when the section is not the H1 header. Items without a section annotation are H1-header content (when a whole checklist is H1-only the annotations are omitted as redundant). The convention sections to inspect for staleness are exactly those the checklist items name, **matched on exact `##` heading text** — if a project renames the section (e.g., `## Cross-references` instead of `## Cross-reference resolution`), the checklist won't find it and that counts as a missing concept. Everything else (user-entries sections like `## Open` / `## Entries` / themed sections, the trailing `## History` pointer's fixed boilerplate) is user-controlled and skipped.
 
-**Either-location satisfaction.** When a concept could plausibly live in more than one templated section (e.g., the FEATURES.md "`/flightdeck:ready` ignores `## Exploring`" claim is teachable in both the `## Exploring` preamble and the `## Requires lines` carve-outs paragraph), the checklist item is satisfied if covered in EITHER location. Annotation names the primary expected location; secondary locations are acceptable substitutes.
+**Either-location satisfaction.** When a concept could plausibly live in more than one templated section (e.g., the FEATURES.md "`/nightshift:ready` ignores `## Exploring`" claim is teachable in both the `## Exploring` preamble and the `## Requires lines` carve-outs paragraph), the checklist item is satisfied if covered in EITHER location. Annotation names the primary expected location; secondary locations are acceptable substitutes.
 
 **`QUICK_WINS.md`** (all H1):
 1. Names this file as one of four repo-local indexes loaded at session start.
@@ -76,7 +76,7 @@ For each templated file, these are the load-bearing concepts its template-contro
 2. States that shipped quick wins are appended here, not to the active file. *(H1)*
 3. Carries forward-looking guidance on entry shape (enough context to recover reasoning, including investigation findings, reverted approaches, benchmarks, the commit or scope it landed in). *(H1)*
 4. Notes the negative-knowledge → patterns promotion path with one-line redirect convention. *(H1)*
-5. States `/flightdeck:ready` does not scan this file (because the walk-and-remove convention keeps active `Requires:` lines authoritative). *(`## Cross-reference resolution` section)*
+5. States `/nightshift:ready` does not scan this file (because the walk-and-remove convention keeps active `Requires:` lines authoritative). *(`## Cross-reference resolution` section)*
 
 **`FEATURES.md`:**
 1. Names this file as one of four repo-local indexes loaded at session start. *(H1)*
@@ -85,13 +85,13 @@ For each templated file, these are the load-bearing concepts its template-contro
 4. Points at `FEATURES_HISTORY.md` for shipped entries; no inline `## Implemented` section. *(H1)*
 5. Explains the comma-separated form (with line-wrap allowed), the three reference shapes, walk-and-remove, and carve-outs for `## Working hypotheses` / `## Staging` / `## Future directions (not yet designed)` / `## Author tooling` / `## Exploring`. *(`## Requires lines` section)*
 6. Explains MVP + named continuations, the strikethrough-as-shipped convention on bullets, slice-suffix link form for downstream references, and the walk-and-remove obligation when a slice ships. *(`## Slicing` section)*
-7. Notes pre-dependency-analysis brainstorms, `/flightdeck:ready` ignores the section, `Requires:` lines optional. *(`## Exploring` preamble — the prose before the first `###` entry inside that section; if the section has no `###` entries yet, the entire section body IS the preamble)*
+7. Notes pre-dependency-analysis brainstorms, `/nightshift:ready` ignores the section, `Requires:` lines optional. *(`## Exploring` preamble — the prose before the first `###` entry inside that section; if the section has no `###` entries yet, the entire section body IS the preamble)*
 
 **`FEATURES_HISTORY.md`:**
 1. Names this file as archival / archaeological — loaded on demand, not at session start. *(H1)*
 2. States that shipped features and shipped slices are appended here, not to the active file. *(H1)*
 3. Notes that breakout files at `features/<slug>.md` stay in place as design records. *(H1)*
-4. States `/flightdeck:ready` does not scan this file (because the walk-and-remove convention keeps active `Requires:` lines authoritative). *(`## Cross-reference resolution` section)*
+4. States `/nightshift:ready` does not scan this file (because the walk-and-remove convention keeps active `Requires:` lines authoritative). *(`## Cross-reference resolution` section)*
 
 **`BUGS.md`:**
 1. Names this file as one of four repo-local indexes loaded at session start. *(H1)*
@@ -103,7 +103,7 @@ For each templated file, these are the load-bearing concepts its template-contro
 1. Names this file as archival / archaeological — loaded on demand, not at session start. *(H1)*
 2. States that fixed bugs are appended here, not to the active file. *(H1)*
 3. Notes that breakout files at `bugs/<slug>.md` stay in place as diagnosis records. *(H1)*
-4. States `/flightdeck:ready` does not scan this file (because the walk-and-remove convention keeps active `Requires:` lines authoritative). *(`## Cross-reference resolution` section)*
+4. States `/nightshift:ready` does not scan this file (because the walk-and-remove convention keeps active `Requires:` lines authoritative). *(`## Cross-reference resolution` section)*
 
 **`PATTERNS.md`** (all H1):
 1. Names this file as one of four repo-local indexes loaded at session start.
@@ -111,9 +111,9 @@ For each templated file, these are the load-bearing concepts its template-contro
 3. States the graduation rule (lift into shared home, link from features rather than duplicating).
 4. Optionally: describes recognition-sufficiency on the index (entry should let readers recognize when a pattern applies without first reading the breakout file).
 
-**SessionStart hook `additionalContext`** (concepts already enumerated inline in step 1's bullet — see line for index list, plans/ location, `/flightdeck:ready`, `**Requires:**` parsing target).
+**SessionStart hook `additionalContext`** (concepts already enumerated inline in step 1's bullet — see line for index list, plans/ location, `/nightshift:ready`, `**Requires:**` parsing target).
 
-**Root `CLAUDE.md` `Backlogs and indexes` section** (concepts already enumerated inline in step 1's bullet — see line for four subdirs, three history archives, walk-and-remove convention, `## Exploring` convention, `/flightdeck:ready`).
+**Root `CLAUDE.md` `Backlogs and indexes` section** (concepts already enumerated inline in step 1's bullet — see line for four subdirs, three history archives, walk-and-remove convention, `## Exploring` convention, `/nightshift:ready`).
 
 ## Rules
 
@@ -121,7 +121,7 @@ For each templated file, these are the load-bearing concepts its template-contro
 - **Index files.** Create from template if missing. If present and the template-controlled portion covers every concept on the per-file checklist in `## Concept checklists` (verbatim or in equivalent project-specific prose), skip — including the enriched-superset case where the live content carries extra material the template doesn't. If present and missing checklist items, propose a **targeted patch** per the shared insertion rules above. User-controlled sections (per the template-controlled-portion definition in step 1) are never touched. If the live content is clearly project-specific custom enough that you can't confidently identify which concepts are missing vs. just-worded-differently, prefer `ask` over an automatic merge proposal.
 - **`QUICK_WINS_HISTORY.md`**, **`FEATURES_HISTORY.md`**, and **`BUGS_HISTORY.md`.** Create from template if missing. If present, follow the index-file rule: skip when concept-coverage is complete, propose a targeted patch (per shared insertion rules above) when concepts are missing, never touch the user-controlled `## Entries` section. If the parent index still has a populated `## Implemented` / `## Fixed` section while its history sibling is missing, surface the situation in the plan output but do not auto-migrate; the user decides whether to move them by hand.
 - **Subdirectories.** Create if missing. Never touch existing contents. Applies to the four subdirs (`features/`, `bugs/`, `patterns/`, `plans/`). Any pre-existing subdirectory outside that set is left alone untouched.
-- **`.claude/settings.json`.** Create from template if missing. If present without a SessionStart hook, offer to merge the hook in. If the additionalContext is missing concepts the SessionStart staleness rule above lists (the four indexes, the `plans/` location, the `/flightdeck:ready` command, the `**Requires:**`-line parsing target) and the rest of the hook structure matches the current template, propose a targeted patch (per shared insertion rules above; the additionalContext string is the "template-controlled portion" here). Enriched-superset additionalContext (covers everything the template covers, plus project-specific extras) is NOT stale — skip. If the hook structure itself has been customized (different command shape, additional event handlers, reads fewer or different files than the current template), show the diff and ask rather than auto-propose.
+- **`.claude/settings.json`.** Create from template if missing. If present without a SessionStart hook, offer to merge the hook in. If the additionalContext is missing concepts the SessionStart staleness rule above lists (the four indexes, the `plans/` location, the `/nightshift:ready` command, the `**Requires:**`-line parsing target) and the rest of the hook structure matches the current template, propose a targeted patch (per shared insertion rules above; the additionalContext string is the "template-controlled portion" here). Enriched-superset additionalContext (covers everything the template covers, plus project-specific extras) is NOT stale — skip. If the hook structure itself has been customized (different command shape, additional event handlers, reads fewer or different files than the current template), show the diff and ask rather than auto-propose.
 - **`CLAUDE.md`.** Create minimally from template if missing. If present without a `Backlogs and indexes` section, offer to append it. If present with a section that's missing concepts the CLAUDE.md staleness rule above lists, propose a targeted patch (per shared insertion rules above; the section is the "template-controlled portion" here). Enriched-superset sections (cover everything the template covers, plus project-specific phrasing or extras) are NOT stale — skip. If present with a similar section (any `##` heading containing "backlog" or "index") that's clearly project-specific custom content, show it and ask before editing.
 - Do not add content to `CLAUDE.md` beyond the Backlogs-and-indexes block. Users have their own conventions for the rest of `CLAUDE.md`.
 
@@ -194,7 +194,7 @@ the pattern doc, leaving a one-line redirect here if cross-referenced.
 
 ## Cross-reference resolution
 
-`/flightdeck:ready` does **not** scan this file. When a quick win lands, every
+`/nightshift:ready` does **not** scan this file. When a quick win lands, every
 other `**Requires:**` line in `FEATURES.md` / `BUGS.md` that referenced
 it is edited at the same time to drop the now-satisfied reference. The
 active `Requires:` lines therefore describe what is *currently*
@@ -233,22 +233,22 @@ shipped". The detailed design lives in the linked file. When a feature
 
 **Every feature index entry carries a `**Requires:**` line** declaring
 the upstream gates that block the feature. The line is comma-separated;
-long lines may wrap across multiple physical lines and `/flightdeck:ready` joins
+long lines may wrap across multiple physical lines and `/nightshift:ready` joins
 them before parsing. Each item is one of three forms:
 
 - A markdown link to a feature, quick win, or bug entry tracked in one
   of the four indexes. The reference is a current blocker; under the
   walk-and-remove convention below, a satisfied dependency is edited
-  out of the line at the moment it ships, so `/flightdeck:ready` treats every
+  out of the line at the moment it ships, so `/nightshift:ready` treats every
   in-backlog reference as actively blocking.
 - Bare text. Names an external primitive (SDK feature, infrastructure
   capability, project-level invariant, library, hardware) that the user
-  confirms case by case. `/flightdeck:ready` flags these as `external`.
+  confirms case by case. `/nightshift:ready` flags these as `external`.
 - The literal word `none.` if there are no upstream gates.
 
 A missing `Requires:` line is a structural error: every entry must say
 something. Silence is not the same as `none.`; it indicates the
-dependency review hasn't been done. The `/flightdeck:ready` command parses these
+dependency review hasn't been done. The `/nightshift:ready` command parses these
 lines to compute the unblocked work set.
 
 Downstream relationships (this feature **enables** what) are not
@@ -263,12 +263,12 @@ they aid understanding.
 shipping order, shallow placeholders, workflow notes, exploratory
 brainstorms) rather than ready-to-implement entries. Items in those
 sections do not carry `Requires:` lines (or, in `## Exploring`'s
-case, may carry them as historical artifacts only) and `/flightdeck:ready`
+case, may carry them as historical artifacts only) and `/nightshift:ready`
 ignores them. Working hypotheses / Staging / Future directions
 (not yet designed) / Author tooling are bulleted rather than `###`
 headings, so the `###`-only candidate filter handles them naturally;
 `## Exploring` holds `###` entries but is excluded by name in the
-`/flightdeck:ready` filter.
+`/nightshift:ready` filter.
 
 Concrete entry shape inside the index. The example mixes a feature
 link, a quick-win link, and a bare external primitive to show all
@@ -294,17 +294,17 @@ in place as a historical design record.
 `BUGS.md`** and remove references to the just-shipped feature: if it
 was the only item on the line, set the line to `Requires: none.`. This
 keeps `Requires:` lines as a literal record of what is *currently*
-blocking and means `/flightdeck:ready` never needs to consult the history file.
+blocking and means `/nightshift:ready` never needs to consult the history file.
 
 **Partially-implemented features** have two routes. If the shipped
 and remaining work is scoped clearly enough to name a named MVP plus
 named continuations, use the formal `**Slices:**` block described in
-`## Slicing` below — `/flightdeck:ready` then expands per-slice work units and
+`## Slicing` below — `/nightshift:ready` then expands per-slice work units and
 downstream features can reference specific slices via the
 `[Feature: slice-name]` link suffix. If the shipped work is real but
 not yet sliceable (e.g., one layer landed, remaining layers are a
 wishlist not a planned breakdown), describe the partial progress in
-the entry's own prose without any special markers. `/flightdeck:ready` treats
+the entry's own prose without any special markers. `/nightshift:ready` treats
 such entries as the `**Requires:**` line dictates; partial progress
 is editorial context for the reader, not a machine-readable signal.
 
@@ -364,12 +364,12 @@ As each slice ships, append a line to `FEATURES_HISTORY.md`:
 The parent entry stays in its themed section until the **last** slice
 ships, at which point it graduates with the final history line.
 
-`/flightdeck:ready` reads the top-level `**Requires:**` line and any inline
+`/nightshift:ready` reads the top-level `**Requires:**` line and any inline
 `**Requires:**` annotations on slice bullets, then reports each
 unshipped slice as a separate work unit (`[Feature title: slice
 name]`). A slice is "unshipped" when its bullet in the `**Slices:**`
 block is *not* struck through — the strikethrough is the live
-slice-status indicator that `/flightdeck:ready` reads. The **first unshipped
+slice-status indicator that `/nightshift:ready` reads. The **first unshipped
 slice** (top-most non-struck bullet) uses the top-level line as its
 gates; other unshipped slices use their inline annotation if present,
 or have no extra gates if no annotation. All non-MVP slices
@@ -390,7 +390,7 @@ line in `FEATURES.md` / `BUGS.md` to drop now-satisfied references.
 Pre-dependency-analysis brainstorms live here. An entry is a draft
 feature whose breakout file carries `status: exploring` in its
 frontmatter; the design is being firmed up and a `**Requires:**` line
-isn't expected yet. `/flightdeck:ready` excludes this section from the readiness
+isn't expected yet. `/nightshift:ready` excludes this section from the readiness
 set on purpose. When a draft firms up enough to declare its upstream
 gates, move it out of `## Exploring` into the appropriate themed `##`
 section, add the `**Requires:**` line, and drop the `status: exploring`
@@ -411,7 +411,7 @@ When a feature (or slice) ships, append its entry there rather than
 to this file, AND walk every other `**Requires:**` line in
 `FEATURES.md` / `BUGS.md`: remove the now-satisfied reference (if it
 was the only one, set the line to `Requires: none.`). The active
-`Requires:` lines describe what is *currently* blocking, so `/flightdeck:ready`
+`Requires:` lines describe what is *currently* blocking, so `/nightshift:ready`
 never has to consult the history file — the dependency graph settles
 as features ship.
 ~~~
@@ -435,7 +435,7 @@ follow-up) over creating a new file.
 
 ## Cross-reference resolution
 
-`/flightdeck:ready` does **not** scan this file. When a feature ships, every
+`/nightshift:ready` does **not** scan this file. When a feature ships, every
 other `**Requires:**` line in `FEATURES.md` / `BUGS.md` that referenced
 it is edited at the same time to drop the now-satisfied reference (see
 the convention in `FEATURES.md`'s `## Requires lines` and `## Slicing`
@@ -468,7 +468,7 @@ inline.
 
 **Every open bug entry carries a `**Requires:**` line** declaring what
 must be in place before the fix can land. Comma-separated, same shape
-as `FEATURES.md` (long lines may wrap; `/flightdeck:ready` joins them before
+as `FEATURES.md` (long lines may wrap; `/nightshift:ready` joins them before
 parsing):
 
 - A markdown link to a feature, quick win, or bug. The reference is a
@@ -479,7 +479,7 @@ parsing):
   user decision) the user confirms case by case.
 - The literal word `none.` if the fix is unblocked.
 
-A missing `Requires:` line is a structural error. `/flightdeck:ready` parses these
+A missing `Requires:` line is a structural error. `/nightshift:ready` parses these
 lines. History entries don't carry `Requires:` lines.
 
 **When a bug is fixed**, move its entry to
@@ -491,7 +491,7 @@ the diagnosis.
 **Then walk every other `**Requires:**` line in `FEATURES.md` and
 `BUGS.md`** and remove references to the just-fixed bug: if it was the
 only item on the line, set the line to `Requires: none.`. Mirror of the
-`FEATURES.md` walk-and-remove convention — `/flightdeck:ready` never has to
+`FEATURES.md` walk-and-remove convention — `/nightshift:ready` never has to
 consult `BUGS_HISTORY.md`.
 
 ## Open
@@ -506,7 +506,7 @@ scannable. When a bug is fixed, append its entry there rather than to
 this file, AND walk every other `**Requires:**` line in `FEATURES.md`
 / `BUGS.md`: remove the now-satisfied reference (if it was the only
 one, set the line to `Requires: none.`). The active `Requires:` lines
-describe what is *currently* blocking, so `/flightdeck:ready` never has to consult
+describe what is *currently* blocking, so `/nightshift:ready` never has to consult
 the history file — the dependency graph settles as bugs are fixed.
 ~~~
 
@@ -526,7 +526,7 @@ description of the fix and the commit it landed in.
 
 ## Cross-reference resolution
 
-`/flightdeck:ready` does **not** scan this file. When a bug is fixed, every other
+`/nightshift:ready` does **not** scan this file. When a bug is fixed, every other
 `**Requires:**` line in `FEATURES.md` / `BUGS.md` that referenced it is
 edited at the same time to drop the now-satisfied reference (mirror of
 the `FEATURES.md` convention). The active `Requires:` lines therefore
@@ -570,7 +570,7 @@ Nothing captured yet.
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"process.stdout.write(JSON.stringify({hookSpecificOutput:{hookEventName:'SessionStart',additionalContext:'Before responding to the first user turn of this session, read .claude/QUICK_WINS.md, .claude/FEATURES.md, .claude/BUGS.md, and .claude/PATTERNS.md. These index the repo refactor backlog, feature ideas, known bugs, and cross-cutting design patterns. Implementation plans live under .claude/plans/<date>-<slug>.md (ephemeral; only present while work is in flight). Read those on demand, not at session start. Any task the user raises may already be queued, designed, diagnosed, or covered. When the user asks what to work on next, run /flightdeck:ready to parse the **Requires:** line on each entry into an unblocked work set.'}}));\""
+            "command": "node -e \"process.stdout.write(JSON.stringify({hookSpecificOutput:{hookEventName:'SessionStart',additionalContext:'Before responding to the first user turn of this session, read .claude/QUICK_WINS.md, .claude/FEATURES.md, .claude/BUGS.md, and .claude/PATTERNS.md. These index the repo refactor backlog, feature ideas, known bugs, and cross-cutting design patterns. Implementation plans live under .claude/plans/<date>-<slug>.md (ephemeral; only present while work is in flight). Read those on demand, not at session start. Any task the user raises may already be queued, designed, diagnosed, or covered. When the user asks what to work on next, run /nightshift:ready to parse the **Requires:** line on each entry into an unblocked work set.'}}));\""
           }
         ]
       }
@@ -604,11 +604,11 @@ Four locations sit alongside the indexes that are not read at session start; con
 - `.claude/FEATURES_HISTORY.md`: archive of shipped features and shipped slices, split out from `FEATURES.md` so the active backlog stays scannable on session start. Append entries here as soon as a feature or slice lands.
 - `.claude/BUGS_HISTORY.md`: archive of fixed bugs, split out from `BUGS.md`. Append entries here as soon as a bug is fixed.
 
-**Walk-and-remove convention.** When a feature, slice, quick win, or bug-fix ships, the same change set that appends its entry to the relevant history archive ALSO walks every other `**Requires:**` line in `FEATURES.md` / `BUGS.md` and drops references to the just-shipped item; if the dropped reference was the only one on the line, the line becomes `Requires: none.`. Active `Requires:` lines therefore describe what is *currently* blocking, and `/flightdeck:ready` never has to consult the history archives to resolve dependencies — the dependency graph settles as work ships.
+**Walk-and-remove convention.** When a feature, slice, quick win, or bug-fix ships, the same change set that appends its entry to the relevant history archive ALSO walks every other `**Requires:**` line in `FEATURES.md` / `BUGS.md` and drops references to the just-shipped item; if the dropped reference was the only one on the line, the line becomes `Requires: none.`. Active `Requires:` lines therefore describe what is *currently* blocking, and `/nightshift:ready` never has to consult the history archives to resolve dependencies — the dependency graph settles as work ships.
 
-Brainstorming output lives in feature files (or in patterns when cross-cutting / in bugs when diagnostic) rather than as separate dated specs. Pre-feature exploratory brainstorms land as draft features with `status: exploring` frontmatter and an entry in `FEATURES.md`'s `## Exploring` section; `/flightdeck:ready` skips them. They graduate to a themed `##` section with a `**Requires:**` line once the design firms up.
+Brainstorming output lives in feature files (or in patterns when cross-cutting / in bugs when diagnostic) rather than as separate dated specs. Pre-feature exploratory brainstorms land as draft features with `status: exploring` frontmatter and an entry in `FEATURES.md`'s `## Exploring` section; `/nightshift:ready` skips them. They graduate to a themed `##` section with a `**Requires:**` line once the design firms up.
 
-The `/flightdeck:ready` command parses each entry's `**Requires:**` line in `FEATURES.md` and `BUGS.md` and reports the unblocked work set. Run it when picking what to work on next.
+The `/nightshift:ready` command parses each entry's `**Requires:**` line in `FEATURES.md` and `BUGS.md` and reports the unblocked work set. Run it when picking what to work on next.
 ~~~
 
 ### `CLAUDE.md` section (to append when `CLAUDE.md` exists without it)

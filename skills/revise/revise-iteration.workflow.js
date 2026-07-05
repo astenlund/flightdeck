@@ -1,7 +1,7 @@
 export const meta = {
   name: 'revise-iteration',
   description: 'One revise-loop iteration: 2 fresh reviewers per active dimension, then a skeptic per non-LGTM finding',
-  whenToUse: 'Invoked by the flightdeck revise skill; not run standalone.',
+  whenToUse: 'Invoked by the nightshift revise skill; not run standalone.',
   phases: [
     { title: 'Review', detail: '2 fresh reviewers per active dimension' },
     { title: 'Verify', detail: 'one skeptic per non-LGTM finding' },
