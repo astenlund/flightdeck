@@ -60,13 +60,13 @@ In each prompt:
 
 **Do not edit the artifact until every agent in the current iteration has returned.** Evaluate all findings and apply all fixes strictly between iterations, then refresh the delivery state (regenerate the patch, update line ranges) before the next launch. This ordering makes it structurally impossible for an agent to review a half-fixed artifact and eliminates the stale-quote class of false positives.
 
-Once all reviewers have returned, collect the non-LGTM findings and launch one fresh skeptic agent per finding, all in a single message (same model pin, `subagent_type: "Explore"`, artifact delivered per the same delivery rules as step 1). Give each skeptic the finding verbatim and the relevant dimension text, and ask it to try to REFUTE the finding against the artifact, returning one verdict:
+Once all reviewers have returned, collect the non-LGTM findings and launch one fresh skeptic agent per finding (see the manual-path exception below), all in a single message (same model pin, `subagent_type: "Explore"`, artifact delivered per the same delivery rules as step 1). Give each skeptic the finding verbatim and the relevant dimension text, and ask it to try to REFUTE the finding against the artifact, returning one verdict:
 
 - **CONFIRMED**: the issue is real; cite the artifact evidence.
 - **REFUTED**: the finding is wrong; cite the artifact evidence.
 - **JUDGMENT_CALL**: not factually decidable (a taste, balance, or priority question).
 
-REFUTED findings are dropped and added to the acknowledgements list with a one-line reason so later iterations don't re-litigate them; a dropped-as-REFUTED finding counts as "skipped" for graduation purposes. CONFIRMED and JUDGMENT_CALL findings proceed to step 3. Uncoordinated reviewer convergence on a finding raises its verification priority, not its truth: converged findings still get verified, and a verified-false convergent finding is dropped like any other. On the manual path (the Workflow script skeptics internally), the controller may settle a plan-or-spec finding that a re-read decides outright — a quoted contradiction, a symbol defined or not, a literal checked against the artifact or the design docs — by re-reading rather than dispatching its skeptic; anything needing judgment still gets the fresh skeptic.
+REFUTED findings are dropped and added to the acknowledgements list with a one-line reason so later iterations don't re-litigate them; a dropped-as-REFUTED finding counts as "skipped" for graduation purposes. CONFIRMED and JUDGMENT_CALL findings proceed to step 3. Uncoordinated reviewer convergence on a finding raises its verification priority, not its truth: converged findings still get verified, and a verified-false convergent finding is dropped like any other. On the manual path (the Workflow script runs skeptics internally), the controller may settle a plan-or-spec finding that a re-read decides outright — a quoted contradiction, a symbol defined or not, a literal checked against the artifact or the design docs — by re-reading rather than dispatching its skeptic; anything needing judgment still gets the fresh skeptic.
 
 ### Step 3: evaluate
 
