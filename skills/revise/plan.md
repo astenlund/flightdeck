@@ -40,7 +40,7 @@ Git-diff scope shapes (`staged`, `unstaged`, `main..HEAD`) that the code artifac
 
 - **Post-fix steps**: none (plans have no build).
 
-- **Post-loop step (hardening stamp)**: when the loop graduates, append a provenance line to the plan under a `## Hardening` section (created at the end of the document if absent):
+- **Post-loop step (hardening stamp)**: once every other post-loop step has landed — so the fingerprint matches the final shipped plan, not an intermediate state — append a provenance line to the plan under a `## Hardening` section (created at the end of the document if absent):
 
   ```
   - revise-plan graduated <date and time> at <sha>, scope: <scope>, content: <fingerprint>
@@ -107,7 +107,7 @@ This dimension may be N/A for some plans (single-commit single-file rewrites, do
 
 ## Spec Reconciliation
 
-A plan is ephemeral; the upstream spec it came from is durable. A correction the review surfaces that contradicts the spec (say, a prescribed invocation a live test disproved) is lost when the plan is deleted unless it is folded back.
+A plan is ephemeral; the upstream spec it came from is durable. A correction the review surfaces that contradicts the spec (say, a prescribed invocation a live test disproved) is lost when the plan is deleted unless it is folded back. This is also the only step that catches plan-vs-spec drift — the loop's dimensions check the plan against itself and against API reality, never its fidelity to the spec's contracts — so a plan that silently contradicts a spec rule passes every dimension and surfaces only here; never skip it when a spec exists.
 
 After the loop graduates, reconcile against each upstream spec (skip with a one-line note if there is none):
 

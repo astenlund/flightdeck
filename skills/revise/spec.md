@@ -35,7 +35,7 @@ Git-diff scope shapes (`staged`, `unstaged`, `main..HEAD`) that the code artifac
 
 - **Post-fix steps**: none (specs have no build).
 
-- **Post-loop step (hardening stamp)**: when the loop graduates, append a provenance line to the artifact under a `## Hardening` section (created at the end of the document if absent):
+- **Post-loop step (hardening stamp)**: once every other post-loop step has landed — so the fingerprint matches the final shipped artifact, not an intermediate state — append a provenance line to the artifact under a `## Hardening` section (created at the end of the document if absent):
 
   ```
   - revise-spec graduated <date and time> at <sha>, scope: <scope>, content: <fingerprint>

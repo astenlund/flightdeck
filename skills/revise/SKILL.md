@@ -66,7 +66,7 @@ Once all reviewers have returned, collect the non-LGTM findings and launch one f
 - **REFUTED**: the finding is wrong; cite the artifact evidence.
 - **JUDGMENT_CALL**: not factually decidable (a taste, balance, or priority question).
 
-REFUTED findings are dropped and added to the acknowledgements list with a one-line reason so later iterations don't re-litigate them; a dropped-as-REFUTED finding counts as "skipped" for graduation purposes. CONFIRMED and JUDGMENT_CALL findings proceed to step 3. Uncoordinated reviewer convergence on a finding raises its verification priority, not its truth: converged findings still get a skeptic, and a verified-false convergent finding is dropped like any other.
+REFUTED findings are dropped and added to the acknowledgements list with a one-line reason so later iterations don't re-litigate them; a dropped-as-REFUTED finding counts as "skipped" for graduation purposes. CONFIRMED and JUDGMENT_CALL findings proceed to step 3. Uncoordinated reviewer convergence on a finding raises its verification priority, not its truth: converged findings still get verified, and a verified-false convergent finding is dropped like any other. On the manual path (the Workflow script skeptics internally), the controller may settle a plan-or-spec finding that a re-read decides outright — a quoted contradiction, a symbol defined or not, a literal checked against the artifact or the design docs — by re-reading rather than dispatching its skeptic; anything needing judgment still gets the fresh skeptic.
 
 ### Step 3: evaluate
 
