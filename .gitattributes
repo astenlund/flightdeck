@@ -1,0 +1,5 @@
+# Workflow scripts are read back by the Claude Code Workflow tool, whose approval
+# validator rejects carriage returns as hidden control characters. Force LF on
+# checkout everywhere (overriding a system-level core.autocrlf=true on Windows) so
+# the installed plugin copy is never CRLF and Workflow(scriptPath=...) stays usable.
+*.workflow.js text eol=lf
