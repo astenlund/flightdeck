@@ -56,6 +56,7 @@ Git-diff scope shapes (`staged`, `unstaged`, `main..HEAD`) that the code artifac
 2. **File paths exist**: every file path the plan tells the executor to touch resolves in the working tree (or is explicitly named "new file"). Stale paths after a rebase are a common failure mode.
 3. **Cross-file claims**: when the plan says "module X exports Y", verify by reading X. Plan-vs-code drift after rebasing onto changed `main` is the second most common gap after API drift.
 4. **Tool / command invocations and embedded literals**: flags, scripts, environment variables, and host-language literals (bash commands, regex patterns, JSON payloads, YAML fragments) quoted literally in the plan are correct. Common traps: variables inside single-quoted bash strings don't expand; regex metacharacters differ between quoted/unquoted forms; JSON requires double quotes; YAML escape rules diverge from JSON's.
+5. **Embedded test code executes correctly, not just compiles**: for test code the plan embeds verbatim, trace the test's runtime flow against the plan's own production code, including fixture side effects (shared recording sinks, disposal hooks, ambient state mutations). Verifying that the code quotes real APIs does not establish that the assertions pass.
 
 ### Dimension 2: Requirements clarity
 
